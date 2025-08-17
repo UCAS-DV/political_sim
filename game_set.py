@@ -17,12 +17,12 @@ def create_character(country):
         game_assets.player['last_name'] = input('Enter a last name for your player character: ')
         
         try:
-            game_assets.player['pronouns'] = game_assets.races[choose('Select a race:', game_assets.races)]
+            game_assets.player['pronouns'] = game_assets.races[choose('Select pronouns for your player character:', game_assets.pronouns)]
         except:
             continue
 
         try:
-            game_assets.player['race'] = game_assets.races[choose('Select a race:', game_assets.races)]
+            game_assets.player['race'] = game_assets.races[choose('Select a race for your player character:', game_assets.races)]
         except:
             continue
 
@@ -31,6 +31,7 @@ def create_character(country):
         party = ''
         options = []
         for party in country.parties:
+            # IF party in ruling coalition, list it as such. IF NOT, list it as opposition
             if party in country.ruling_coalition:
                 options.append(f"Ruling: {party.name} ({party.initials})")
             else:
@@ -80,7 +81,7 @@ def select_country(country):
         match choice:
             case 1:
                 print('\033c')
-                print(f"{country.name}'s Political Situation")
+                print(f"{country.name}'s Political Situation:\n")
                 print(country.description)
                 input('Enter anything to continue: ')
             case 2:
@@ -117,3 +118,5 @@ def game_set_menu():
             case 1:
                 create_character(select_country(game_assets.osvaria))
         continue
+
+game_set_menu()

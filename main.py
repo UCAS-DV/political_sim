@@ -10,12 +10,12 @@ def main():
         print("A text-based political simulator by Darius".center(60))
         print("=" * 60)
 
-        choice = inq_select('Use the arrow keys and "Enter" to navigate UI.', 'New Game', 'Load Game', 'Exit')
+        choice = inq_select('Use the arrow keys and "Enter" to navigate UI.', 'New Game', 'Exit')
 
         match choice:
             case 1:
                 game_set_menu()
-            case 3:
+            case 2:
                 print("Thanks for playing!")
                 break
 

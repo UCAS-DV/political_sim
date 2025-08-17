@@ -2,7 +2,7 @@ import math
 
 
 class country:
-    def __init__(self, name, description, executive, opposition_leader, parties, ruling_coalition, political_system, lower_seats=0, upper_seats=0):
+    def __init__(self, name, description, executive, opposition_leader, parties, ruling_coalition, political_system, issues, money_available, lower_seats, upper_seats):
         self.name = name
         self.description = description
 
@@ -21,6 +21,9 @@ class country:
             executive.position == "Prime Minister"
     
         opposition_leader.position = "Opposition Leader"
+
+        self.issues = issues
+        self.money_available = money_available
 
         self.lower_seats = lower_seats
         self.upper_seats = upper_seats
@@ -44,7 +47,12 @@ class country:
 
             # IF party is not in ruling coalition, list party as opposition
             if party not in self.ruling_coalition:
-                country_string += f"    {party.name} - {party.initials} - {party.general_alignment}\n"
+                country_string += f"    {party.name} - {party.initials} - {party.general_alignment}\n\n"
+
+        if self.money_available > 0:
+            country_string += f"O${self.money_available}M Surplus\n"
+        else:
+            country_string += f"O${self.money_available * -1}M Debt\n"
 
         if self.political_system == "Parliamentary":
 
@@ -184,22 +192,74 @@ class person:
 
         return person_string + economic_string + social_string + foreign_string
      
+class issue:
+    def __init__(self, name, description, criteria_func, criteria_display_func):
+        self.name = name
+        self.description = description
+        self.criteria_func = criteria_func
+        self.criteria_display_func = criteria_display_func
+        self.resolved = False
+
+    def check_resolved(self, criteria):
+        self.resolved = self.criteria_func(criteria)
+        return self.resolved
+    
+    def __str__(self):
+        issue_string = f"Issue: {self.name}\nDescription: {self.description}\nCriteria: {self.criteria_display_func()}"
+
+        if self.resolved:
+            issue_string += '\nStatus: Resolved'
+        else:
+            issue_string += '\nStatus: Unresolved'
+
+        return issue_string
 
 # =================== People ===================
 osvaria_pm = person(name="Sylvara Dewlight", race="Elf", party="Party Leader", general_alignment="Centre-Left",economic_alignment=-2,social_alignment=-3,foreign_alignment="Internationalist", position="Prime Minister")
-ocp_leader = person("Alexander Stevens", "Human", party="Party Leader", general_alignment="Right", economic_alignment=3, social_alignment=5, foreign_alignment="Isolationist", position="Opposition Leader")
+ocp_leader = person("Andrew Stevens", "Human", party="Party Leader", general_alignment="Right", economic_alignment=3, social_alignment=5, foreign_alignment="Isolationist", position="Opposition Leader")
 
 # =================== People ===================
-osvarian_reform_party = party("Osvarian Reform Party", "ORP", osvaria_pm, "Centre-Left", -2, -2, "Internationalist", 46, 0)
-osvarian_conservatives = party("Conservative Party of Osvaria", "CPO", ocp_leader, "Right", 3, 3, "Isolationist", 54, 0) 
+osvarian_reform_party = party("Osvarian Reform Party", "ORP", osvaria_pm, "Centre-Left", -2, -2, "Internationalist", 54, 0)
+osvarian_conservatives = party("Conservative Party of Osvaria", "CPO", ocp_leader, "Right", 3, 3, "Isolationist", 46, 0) 
+
+# =================== Political Situations ===================
+
+# PS stands for Political Situation
+
+# Reads the political situation file
+def read_ps(ps_filepath):
+    with open(ps_filepath, 'r') as ps_file:
+        return ps_file.read()
+
+# =================== Criteria ===================
+veterans = 200000
+veterans_compensated = 90000
+
+# =================== Criteria Functions ===================
+
+def check_veteran_compensation():
+    if veterans_compensated/veterans < 0.7:
+        return False
+    else:
+        return True
+    
+def show_veteran_compensation():
+    return f"{veterans_compensated/veterans * 100:.1f}% of veterans are compensated. 75% of veterans need to be compensated to resolve the issue."
+
+# =================== Issues ===================
+veterans_compensated_issue = issue('Veterans are uncompensated for their service', 'Test', check_veteran_compensation, show_veteran_compensation)
 
 # =================== Countries ===================
-osvaria = country("Western Osvarian Republic", "Test Description", osvaria_pm, ocp_leader, [osvarian_reform_party, osvarian_conservatives], [osvarian_reform_party], "Parliamentary", 100, 0)
+osvaria = country("Western Osvarian Republic", read_ps('political_situations\osvarian_ps.txt'), 
+                  osvaria_pm, ocp_leader, 
+                  [osvarian_reform_party, osvarian_conservatives], [osvarian_reform_party], "Parliamentary", 
+                  [veterans_compensated_issue], -70,
+                  100, 0)
+
+print(osvaria)
 
 races = ['Human', 'Elf']
-
 pronouns = ['He/Him', 'She/Her', 'They/Them']
-
 player = {
     'first_name': 'Darius',
     'last_name': 'Vaiaoga',
