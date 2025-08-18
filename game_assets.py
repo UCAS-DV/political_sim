@@ -256,8 +256,6 @@ osvaria = country("Western Osvarian Republic", read_ps('political_situations\osv
                   [veterans_compensated_issue], -70,
                   100, 0)
 
-print(osvaria)
-
 races = ['Human', 'Elf']
 pronouns = ['He/Him', 'She/Her', 'They/Them']
 player = {

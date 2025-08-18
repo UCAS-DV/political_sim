@@ -119,4 +119,3 @@ def game_set_menu():
                 create_character(select_country(game_assets.osvaria))
         continue
 
-game_set_menu()

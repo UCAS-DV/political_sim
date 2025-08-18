@@ -42,4 +42,3 @@ def gui():
                 month += 1
                 year = math.floor(month / 12) + 1
 
-gui()
