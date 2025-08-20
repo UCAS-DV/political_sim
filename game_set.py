@@ -112,10 +112,10 @@ def game_set_menu():
     print('\033c')
 
     while True:
-        country = inq_select("Select a country:", 'Western Osvaria Republic')
+        country = inq_select("Select a country:", 'Republic of Aoranias')
 
         match country:
             case 1:
-                create_character(select_country(game_assets.osvaria))
+                create_character(select_country(game_assets.aorania))
         continue
 

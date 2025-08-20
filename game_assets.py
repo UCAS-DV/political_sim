@@ -2,7 +2,7 @@ import math
 
 
 class country:
-    def __init__(self, name, description, executive, opposition_leader, parties, ruling_coalition, political_system, issues, money_available, lower_seats, upper_seats):
+    def __init__(self, name, description, executive, opposition_leader, parties, ruling_coalition, political_system, issues, budget, lower_seats, upper_seats):
         self.name = name
         self.description = description
 
@@ -23,7 +23,7 @@ class country:
         opposition_leader.position = "Opposition Leader"
 
         self.issues = issues
-        self.money_available = money_available
+        self.budget = budget
 
         self.lower_seats = lower_seats
         self.upper_seats = upper_seats
@@ -49,10 +49,10 @@ class country:
             if party not in self.ruling_coalition:
                 country_string += f"    {party.name} - {party.initials} - {party.general_alignment}\n\n"
 
-        if self.money_available > 0:
-            country_string += f"O${self.money_available}M Surplus\n"
-        else:
-            country_string += f"O${self.money_available * -1}M Debt\n"
+        #if self.money_available > 0:
+        #    country_string += f"O${self.money_available}M Surplus\n"
+        #else:
+        #    country_string += f"O${self.money_available * -1}M Debt\n"
 
         if self.political_system == "Parliamentary":
 
@@ -214,22 +214,26 @@ class issue:
 
         return issue_string
 
-# =================== People ===================
-osvaria_pm = person(name="Sylvara Dewlight", race="Elf", party="Party Leader", general_alignment="Centre-Left",economic_alignment=-2,social_alignment=-3,foreign_alignment="Internationalist", position="Prime Minister")
-ocp_leader = person("Andrew Stevens", "Human", party="Party Leader", general_alignment="Right", economic_alignment=3, social_alignment=5, foreign_alignment="Isolationist", position="Opposition Leader")
+class budget:
+    def __init__(self, expenditures, income_sources, balance):
+        self.expenditures = expenditures
+        self.income_sources = income_sources
 
-# =================== People ===================
-osvarian_reform_party = party("Osvarian Reform Party", "ORP", osvaria_pm, "Centre-Left", -2, -2, "Internationalist", 54, 0)
-osvarian_conservatives = party("Conservative Party of Osvaria", "CPO", ocp_leader, "Right", 3, 3, "Isolationist", 46, 0) 
-
-# =================== Political Situations ===================
+        self.balance = balance
 
 # PS stands for Political Situation
-
 # Reads the political situation file
 def read_ps(ps_filepath):
     with open(ps_filepath, 'r') as ps_file:
         return ps_file.read()
+
+# =================== People ===================
+aorania_pm = person(name="Sylvara Dewlight", race="Elf", party="Party Leader", general_alignment="Centre-Left",economic_alignment=-2,social_alignment=-3,foreign_alignment="Internationalist", position="Prime Minister")
+cpa_leader = person("Andrew Stevens", "Human", party="Party Leader", general_alignment="Right", economic_alignment=3, social_alignment=5, foreign_alignment="Isolationist", position="Opposition Leader")
+
+# =================== People ===================
+aoranian_reform_party = party("Aoranian Reform Party", "ARP", aorania_pm, "Centre-Left", -2, -2, "Internationalist", 54, 0)
+aoranian_conservatives = party("Conservative Party of Aorania", "CPA", cpa_leader, "Right", 3, 3, "Isolationist", 46, 0) 
 
 # =================== Criteria ===================
 veterans = 200000
@@ -249,12 +253,15 @@ def show_veteran_compensation():
 # =================== Issues ===================
 veterans_compensated_issue = issue('Veterans are uncompensated for their service', 'Test', check_veteran_compensation, show_veteran_compensation)
 
+# =================== Budgets ===================
+aorania_budget = budget([{"name": "Veterans' Compensation", "value": 190}], [{"name": "Income Tax", 'value': 220}], 500)
+
 # =================== Countries ===================
-osvaria = country("Western Osvarian Republic", read_ps('political_situations\osvarian_ps.txt'), 
-                  osvaria_pm, ocp_leader, 
-                  [osvarian_reform_party, osvarian_conservatives], [osvarian_reform_party], "Parliamentary", 
-                  [veterans_compensated_issue], -70,
-                  100, 0)
+aorania = country("Republic of Aorania", read_ps('political_situations\osvarian_ps.txt'), 
+                  aorania_pm, cpa_leader, 
+                  [aoranian_reform_party, aoranian_conservatives], [aoranian_reform_party], "Parliamentary", 
+                  [veterans_compensated_issue], aorania_budget, -70,
+                  100)
 
 races = ['Human', 'Elf']
 pronouns = ['He/Him', 'She/Her', 'They/Them']
@@ -263,6 +270,6 @@ player = {
     'last_name': 'Vaiaoga',
     'race': 'Human',
     'pronouns': 'He/Him',
-    'country': osvaria,
-    'party': osvarian_reform_party
+    'country': aorania,
+    'party': aoranian_reform_party
 }
